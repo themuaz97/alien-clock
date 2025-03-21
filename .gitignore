@@ -1,0 +1,22 @@
+# Node modules and build artifacts
+node_modules/
+dist/
+.vite/
+.npm/
+.yarn/
+.pnpm-debug.log*
+yarn.lock
+package-lock.json
+
+# Editor and OS specific files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Environment variables
+.env
+
+# Cache and Temp files
+npm-debug.log*
