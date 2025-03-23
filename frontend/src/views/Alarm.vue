@@ -19,7 +19,11 @@
     </div>
 
     <div class="flex justify-end w-full gap-2 mt-12">
-      <Button v-if="isAlarmRinging" @click="stopAlarm" icon="pi pi-stop" />
+      <Button
+        v-if="isAlarmRinging"
+        @click="stopAlarm"
+        icon="pi pi-stop"
+        variant="danger" />
       <audio ref="audioPlayer"></audio>
 
       <Button @click="addModal = true" icon="pi pi-plus" size="small"></Button>
@@ -61,30 +65,26 @@
       </Modal>
     </div>
 
-    <div v-if="alarms.length > 0">
-      <Card
-        v-for="(alarm, index) in alarms"
-        :key="index"
-        class="card"
-        @click="viewAlarm(alarm.id)">
-        <div class="flex justify-between items-center gap-28">
-          <div class="flex flex-col justify-center gap-2">
-            <h2 class="text-2xl font-bold">
-              {{ alarm.title }}
-            </h2>
-            <span class="text-xl">{{ formatTime(alarm.alarm) }}</span>
-            <span>{{ formatDay(alarm.alarm) }}</span>
-          </div>
-          <Switch
-            :checked="alarm.isActive"
-            @update:checked="(value) => switchAlarm(alarm.id, value)"
-            @click.stop />
+    <Card
+      v-for="(alarm, index) in alarms"
+      :key="index"
+      class="alarm-card"
+      :class="{ triggered: alarm.triggered }"
+      @click="viewAlarm(alarm.id)">
+      <div class="flex justify-between items-center gap-28">
+        <div class="flex flex-col justify-center gap-2">
+          <h2 class="text-2xl font-bold">
+            {{ alarm.title }}
+          </h2>
+          <span class="text-xl">{{ formatTime(alarm.alarm) }}</span>
+          <span>{{ formatDay(alarm.alarm) }}</span>
         </div>
-      </Card>
-    </div>
-    <div v-else>
-      <p>No alarms found.</p>
-    </div>
+        <Switch
+          :checked="alarm.isActive"
+          @update:checked="(value) => switchAlarm(alarm.id, value)"
+          @click.stop />
+      </div>
+    </Card>
 
     <!-- View Alarm Modal -->
     <Modal v-model:isOpen="viewModal" header="View Alarm">
@@ -269,23 +269,19 @@
         if (!alarm.isActive) return;
 
         const alarmTime = new Date(alarm.alarm);
+        const endTime = new Date(alarmTime.getTime() + 60000); // 1 minute duration
 
-        // Only trigger if current time is after or equal to alarm time
-        // and within a small window (1 minute) to catch it
-        if (now >= alarmTime && now - alarmTime < 60000 && !alarm.triggered) {
+        // Check if the alarm should be triggered
+        if (now >= alarmTime && now < endTime && !alarm.triggered) {
           console.log(`Alarm Triggered: ${alarm.title}`);
-
-          // Get the full path for the ringtone
-          const ringtonePath = alarm.ringtone;
-          playAlarm(ringtonePath);
-
-          // Mark as triggered to prevent repeated triggering
+          playAlarm(alarm.ringtone);
           alarm.triggered = true;
+        }
 
-          // Reset the triggered flag after the alarm duration
-          setTimeout(() => {
-            alarm.triggered = false;
-          }, 120000);
+        // Reset triggered flag when the alarm has ended
+        if (now >= endTime && alarm.triggered) {
+          console.log(`Alarm Ended: ${alarm.title}`);
+          alarm.triggered = false;
         }
       });
     }, 1000); // Check every second
@@ -353,12 +349,5 @@
 </script>
 
 <style scoped>
-  .card {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-
-  .card:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
+  
 </style>

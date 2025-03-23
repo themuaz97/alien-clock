@@ -1,0 +1,28 @@
+.alarm-card {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .alarm-card:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(128, 90, 213, 0.7); /* purple-600 */
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(128, 90, 213, 1); /* purple-600 */
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 10px rgba(128, 90, 213, 0.7); /* purple-600 */
+    }
+  }
+
+  .triggered {
+    animation: pulse 1.5s infinite ease-in-out;
+    border: 2px solid rgba(128, 90, 213, 0.8); /* purple-600 */
+  }
