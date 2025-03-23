@@ -79,7 +79,6 @@ Make sure you have the following installed:
 | POST    | `/api/v1/alarms`             | Create a new alarm           |
 | PUT     | `/api/v1/alarms/update/{id}` | Update an existing alarm     |
 | PUT     | `/api/v1/alarms/switch/{id}` | Enable or disable an alarm   |
-| DELETE  | `/api/v1/alarms/{id}`        | Delete an alarm              |
 
 ## Environment Variables
 
@@ -90,7 +89,7 @@ Create a `.env` file for frontend and `application.properties` for backend direc
 VITE_API_BASE_URL=http://localhost:8080/api/v1
 ```
 
-### Backend `.env`
+### Backend `application.properties`
 ```env
 spring.application.name=alien-clock
 spring.datasource.url=jdbc:postgresql://localhost:5432/alien_clock_db
